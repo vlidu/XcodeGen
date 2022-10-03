@@ -18,7 +18,7 @@ class ProjectCommand: Command {
     @Key("-r", "--project-root", description: "The path to the project root directory. Defaults to the directory containing the project spec.")
     var projectRoot: Path?
 
-    @Key ("-l", "--local", description: "Specify that you want to add local pacakges from Environment Variables")
+    @Flag ("-l", "--local", description: "Specify that you want to add local pacakges from Environment Variables")
     var local: Bool?
 
     @Flag("-n", "--no-env", description: "Disable environment variable expansions")
