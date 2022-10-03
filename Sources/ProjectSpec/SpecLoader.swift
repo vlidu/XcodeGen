@@ -15,9 +15,23 @@ public class SpecLoader {
         self.version = version
     }
 
-    public func loadProject(path: Path, projectRoot: Path? = nil, variables: [String: String] = [:]) throws -> Project {
+    public func loadProject(path: Path, projectRoot: Path? = nil, variables: [String: String] = [:], localPackages: Bool = false) throws -> Project {
         let spec = try SpecFile(path: path, variables: variables)
-        let resolvedDictionary = spec.resolvedDictionary()
+        var resolvedDictionary = spec.resolvedDictionary()
+
+        if localPackages {
+            resolvedDictionary["packages"] = [
+                "BusinessBase": ["path": "${BusinessBasePath}"],
+                "BusinessPay": ["path": "${BusinessPayPath}"],
+                "ComponentsBase": ["path": "${ComponentsBasePath}"],
+                "ComponentsPay": ["path": "${ComponentsPayPath}"],
+                "Tools": ["path": "${ToolsPath}"],
+                "Entities": ["path": "${EntitiesPath}"],
+                "Utils": ["path": "${UtilsPath}"]
+            ]
+        }
+
+
         let project = try Project(basePath: projectRoot ?? spec.basePath, jsonDictionary: resolvedDictionary)
 
         self.project = project

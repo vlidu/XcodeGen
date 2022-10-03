@@ -18,6 +18,9 @@ class ProjectCommand: Command {
     @Key("-r", "--project-root", description: "The path to the project root directory. Defaults to the directory containing the project spec.")
     var projectRoot: Path?
 
+    @Key ("-l", "--local", description: "Specify that you want to add local pacakges from Environment Variables")
+    var local: Bool?
+
     @Flag("-n", "--no-env", description: "Disable environment variable expansions")
     var disableEnvExpansion: Bool
 
@@ -28,9 +31,8 @@ class ProjectCommand: Command {
     }
 
     func execute() throws {
-        
         let projectSpecPath = (spec ?? "project.yml").absolute()
-        
+
         if !projectSpecPath.exists {
             throw GenerationError.missingProjectSpec(projectSpecPath)
         }
@@ -41,7 +43,7 @@ class ProjectCommand: Command {
         let variables: [String: String] = disableEnvExpansion ? [:] : ProcessInfo.processInfo.environment
 
         do {
-            project = try specLoader.loadProject(path: projectSpecPath, projectRoot: projectRoot, variables: variables)
+            project = try specLoader.loadProject(path: projectSpecPath, projectRoot: projectRoot, variables: variables, localPackages: local ?? false)
         } catch {
             throw GenerationError.projectSpecParsingError(error)
         }
