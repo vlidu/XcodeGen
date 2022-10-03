@@ -19,7 +19,7 @@ class ProjectCommand: Command {
     var projectRoot: Path?
 
     @Flag ("-l", "--local", description: "Specify that you want to add local pacakges from Environment Variables")
-    var local: Bool?
+    var local: Bool
 
     @Flag("-n", "--no-env", description: "Disable environment variable expansions")
     var disableEnvExpansion: Bool
@@ -43,7 +43,7 @@ class ProjectCommand: Command {
         let variables: [String: String] = disableEnvExpansion ? [:] : ProcessInfo.processInfo.environment
 
         do {
-            project = try specLoader.loadProject(path: projectSpecPath, projectRoot: projectRoot, variables: variables, localPackages: local ?? false)
+            project = try specLoader.loadProject(path: projectSpecPath, projectRoot: projectRoot, variables: variables, localPackages: local)
         } catch {
             throw GenerationError.projectSpecParsingError(error)
         }
